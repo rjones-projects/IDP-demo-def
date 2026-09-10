@@ -1,0 +1,91 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write  # required for Workload Identity Federation
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Authenticate git for Terraform modules
+        env:
+          GH_MODULES_TOKEN: ${{ secrets.GH_MODULES_TOKEN || github.token }}
+        run: |
+          git config --global url."https://x-access-token:${GH_MODULES_TOKEN}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://x-access-token:${GH_MODULES_TOKEN}@github.com/".insteadOf "git@github.com:"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Cache Terraform state
+        uses: actions/cache@v4
+        with:
+          path: |
+            infra/terraform.tfstate
+            infra/terraform.tfstate.backup
+          key: terraform-state-${{ github.run_id }}
+          restore-keys: |
+            terraform-state-
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+        continue-on-error: true
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        continue-on-error: true
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+
+      - name: Comment plan on PR
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          PLAN_STDOUT: ${{ steps.plan.outputs.stdout }}
+          PLAN_STDERR: ${{ steps.plan.outputs.stderr }}
+          PLAN_OUTCOME: ${{ steps.plan.outcome }}
+          INIT_OUTCOME: ${{ steps.init.outcome }}
+          VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
+        with:
+          script: |
+            const plan = (process.env.PLAN_STDOUT || process.env.PLAN_STDERR || 'No plan output.').slice(0, 60000);
+            const body = [
+              '#### Terraform Plan `' + process.env.PLAN_OUTCOME + '`',
+              '- init: `' + process.env.INIT_OUTCOME + '`  validate: `' + process.env.VALIDATE_OUTCOME + '`',
+              '',
+              '<details><summary>Show Plan</summary>',
+              '',
+              '```terraform',
+              plan,
+              '```',
+              '',
+              '</details>',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
