@@ -1,7 +1,10 @@
-name: Terraform Plan
+name: Terraform Apply
 
 on:
   pull_request:
+    types: [closed]
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -12,7 +15,8 @@ env:
   TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
 
 jobs:
-  plan:
+  apply:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -20,6 +24,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup Terraform Toolchain
         uses: VFGROUP-NSE-NDPE/dne-pe-reusable-actions/actions/setup-terraform-toolchain@b6ce1eb21bd49556db7e1270b1d77169da2b6b99  # main, no tag
@@ -49,34 +55,32 @@ jobs:
           restore-keys: |
             terraform-state-
 
-      - name: Terraform Init & Validate
+      - name: Terraform Init
         id: init
-        run: |
-          terraform init -input=false -no-color 2>&1 | tee -a terraform_output.txt
-          terraform validate -no-color 2>&1 | tee -a terraform_output.txt
+        run: terraform init -input=false -no-color 2>&1 | tee -a terraform_output.txt
         continue-on-error: true
 
-      - name: Terraform Plan
-        id: plan
+      - name: Terraform Apply
+        id: apply
         if: steps.init.outcome == 'success'
-        run: terraform plan -no-color -input=false 2>&1 | tee -a terraform_output.txt
+        run: terraform apply -auto-approve -no-color -input=false 2>&1 | tee -a terraform_output.txt
         continue-on-error: true
 
       - name: Determine Outcome
         id: result
         if: always()
         run: |
-          if [ "${{ steps.init.outcome }}" == "success" ] && [ "${{ steps.plan.outcome }}" == "success" ]; then
+          if [ "${{ steps.init.outcome }}" == "success" ] && [ "${{ steps.apply.outcome }}" == "success" ]; then
             echo "outcome=success" >> "$GITHUB_OUTPUT"
           else
             echo "outcome=failure" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Post Plan Comment
+      - name: Post Apply Comment
         if: always()
         uses: VFGROUP-NSE-NDPE/dne-pe-reusable-actions/actions/post-run-comment@b6ce1eb21bd49556db7e1270b1d77169da2b6b99  # main, no tag
         with:
-          title: 'Terraform Plan'
+          title: 'Terraform Apply'
           module: 'infra'
           outcome: ${{ steps.result.outputs.outcome }}
           output-file: infra/terraform_output.txt
