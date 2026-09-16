@@ -24,7 +24,8 @@ module "gcs" {
 
 module "cloud_run" {
   source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/cloud_run?ref=main"
-
+  project_id                     = var.project_id
+  region                         = var.region                  
   containers                     = var.containers
   containers_default             = var.containers_default
   context                        = var.context
