@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   terraform-ci:
-    uses: rjones-projects/dne-pe-reusable-actions/.github/workflows/terraform-ci-reusable.yml
+    uses: rjones-projects/dne-pe-reusable-actions/.github/workflows/terraform-ci-reusable.yml@832c40b5eb23927a6017bc4cc2695b21024af572  # main, no tag
     with:
       gcp_project_id: idp-poc-495014
       app_id: ${{ vars.APP_ID }}
