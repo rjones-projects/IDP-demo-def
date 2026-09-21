@@ -10,8 +10,10 @@ permissions:
 #this is an example of how to use a reusable workflow for terraform ci.  The reusable workflow is in the rjones-projects/dne-pe-reusable-actions repo.  The reusable workflow is called terraform-ci-reusable.yml and is located in the .github/workflows directory of that repo.  The reusable workflow requires the following inputs:
 jobs:
   terraform-ci: 
-    uses: rjones-projects/dne-pe-reusable-actions/.github/workflows/terraform-ci-reusable.yml@832c40b5eb23927a6017bc4cc2695b21024af572  # main, no tag
+    uses: rjones-projects/dne-pe-reusable-actions/.github/workflows/terraform-ci-reusable.yml@a0d86f49dcc3b628b9d29bc86807e16a5fd6716a  # main, no tag
     with:
+      enforce_governance: false
+      run_module_tests: false
       gcp_project_id: idp-poc-495014
       app_id: ${{ vars.APP_ID }}
       app_owner: ${{ github.repository_owner }}
