@@ -1,0 +1,21 @@
+name: Terraform CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write  # required for Workload Identity Federation
+
+jobs:
+  terraform-ci:
+    uses: rjones-projects/dne-pe-reusable-actions/.github/workflows/terraform-ci-reusable.yml@832c40b5eb23927a6017bc4cc2695b21024af572  # main, no tag
+    with:
+      gcp_project_id: idp-poc-495014
+      app_id: ${{ vars.APP_ID }}
+      app_owner: ${{ github.repository_owner }}
+    secrets:
+      NGDI_APP_PRIVATE_KEY: ${{ secrets.NGDI_APP_PRIVATE_KEY }}
+      WIF_PROVIDER_URL: ${{ secrets.WIF_PROVIDER }}
+      SA_NAME: ${{ secrets.WIF_SERVICE_ACCOUNT }}
