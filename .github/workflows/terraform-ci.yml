@@ -17,7 +17,4 @@ jobs:
       gcp_project_id: idp-poc-495014
       app_id: ${{ vars.APP_ID }}
       app_owner: ${{ github.repository_owner }}
-    secrets:
-      NGDI_APP_PRIVATE_KEY: ${{ secrets.NGDI_APP_PRIVATE_KEY }}
-      WIF_PROVIDER_URL: ${{ secrets.WIF_PROVIDER }}
-      SA_NAME: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+    secrets: inherit
