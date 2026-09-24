@@ -15,7 +15,7 @@ jobs:
   terraform-cd:
     if: github.event.pull_request.merged == true
     uses: rjones-projects/dne-pe-reusable-actions/.github/workflows/terraform-cd-reusable.yml@a0d86f49dcc3b628b9d29bc86807e16a5fd6716a  # main, no tag
-    secrets:
-      WIF_PROVIDER_URL: ${{ secrets.WIF_PROVIDER }}
-      SA_NAME: ${{ secrets.WIF_SERVICE_ACCOUNT }}
-      GH_MODULES_TOKEN: ${{ secrets.GH_MODULES_TOKEN }}
+    with:
+      app_id: ${{ vars.APP_ID }}
+      app_owner: ${{ github.repository_owner }}
+    secrets: inherit

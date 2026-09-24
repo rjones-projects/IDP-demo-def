@@ -7,15 +7,15 @@ permissions:
   contents: read
   pull-requests: write
   id-token: write  # required for Workload Identity Federation
-
+#added a commnet to test
+  #this is an example of how to use a reusable workflow for terraform ci.  The reusable workflow is in the rjones-projects/dne-pe-reusable-actions repo.  The reusable workflow is called terraform-ci-reusable.yml and is located in the .github/workflows directory of that repo.  The reusable workflow requires the following inputs:
 jobs:
-  terraform-ci:
-    uses: rjones-projects/dne-pe-reusable-actions/.github/workflows/terraform-ci-reusable.yml@832c40b5eb23927a6017bc4cc2695b21024af572  # main, no tag
+  terraform-ci: 
+    uses: rjones-projects/dne-pe-reusable-actions/.github/workflows/terraform-ci-reusable.yml@ae5de0d5fd99192327a039570b43d0b5ab12bcdb
     with:
+      enforce_governance: false
+      run_module_tests: false
       gcp_project_id: idp-poc-495014
       app_id: ${{ vars.APP_ID }}
       app_owner: ${{ github.repository_owner }}
-    secrets:
-      NGDI_APP_PRIVATE_KEY: ${{ secrets.NGDI_APP_PRIVATE_KEY }}
-      WIF_PROVIDER_URL: ${{ secrets.WIF_PROVIDER }}
-      SA_NAME: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+    secrets: inherit

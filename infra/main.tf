@@ -14,7 +14,7 @@ terraform {
 }
 
 module "gcs" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/gcs?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/gcs?ref=main"
 
   project_id                     = var.project_id
   region                         = var.region
@@ -23,7 +23,7 @@ module "gcs" {
 }
 
 module "cloud_run" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/cloud_run?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/cloud_run?ref=main"
   project_id                     = var.project_id
   region                         = var.region                  
   containers                     = var.containers
@@ -47,7 +47,7 @@ module "cloud_run" {
 }
 
 module "iam_service_account" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/iam_service_account?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/iam_service_account?ref=main"
 
   project_id                     = var.project_id
   project_number                 = var.project_number
@@ -56,7 +56,7 @@ module "iam_service_account" {
 }
 
 module "project_iam" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/project_iam?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/project_iam?ref=main"
 
   project_id                     = var.project_id
   project_iam                    = var.project_iam
@@ -64,21 +64,21 @@ module "project_iam" {
 }
 
 module "iam_custom_role_stack" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/iam_custom_role_stack?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/iam_custom_role_stack?ref=main"
 
   iam_custom_role_stack          = var.iam_custom_role_stack
   iam_custom_role_stack_default  = var.iam_custom_role_stack_default
 }
 
 module "service_agent_iam" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/service_agent_iam?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/service_agent_iam?ref=main"
 
   project_id                     = var.project_id
   service_agent_iam              = var.service_agent_iam
 }
 
 module "kms" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/kms?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/kms?ref=main"
 
   kms                            = var.kms
   iam                            = var.iam
@@ -94,7 +94,7 @@ module "kms" {
 }
 
 module "cloud_sql" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/cloud_sql?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/cloud_sql?ref=main"
 
   project_id                     = var.project_id
   region                         = var.region
@@ -103,7 +103,7 @@ module "cloud_sql" {
 }
 
 module "network" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/network?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/network?ref=main"
 
   project_id                     = var.project_id
   region                         = var.region
@@ -151,7 +151,7 @@ module "network" {
 }
 
 module "firewall" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/firewall?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/firewall?ref=main"
 
   context                        = var.context
   firewall                       = var.firewall
@@ -166,7 +166,7 @@ module "firewall" {
 }
 
 module "dns" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/dns?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/dns?ref=main"
 
   project_id                     = var.project_id
   dns                            = var.dns
@@ -174,7 +174,7 @@ module "dns" {
 }
 
 module "external_global_address" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/external_global_address?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/external_global_address?ref=main"
 
   project_id                     = var.project_id
   region                         = var.region
@@ -182,7 +182,7 @@ module "external_global_address" {
 }
 
 module "external_global_loadbalancer" {
-  source = "github.com/rjones-projects/gcp_terraform-modules//terraform/modules/external_global_loadbalancer?ref=main"
+  source = "github.com/vfgroup-nse-ndpe/dne-pe-terraform-modules//terraform/modules/external_global_loadbalancer?ref=main"
 
   project_id                     = var.project_id
   region                         = var.region
